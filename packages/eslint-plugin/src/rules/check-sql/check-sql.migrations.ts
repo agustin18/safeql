@@ -150,5 +150,10 @@ export function runCheckSqlMigrations<TTypes extends Record<string, unknown>>(sq
     CREATE TABLE test_quoted_enum (
       col quoted_enum NOT NULL
     );
+
+    CREATE TYPE control_enum AS ENUM (E'line\\nbreak', E'tab\\tchar', E'carriage\\rreturn');
+    CREATE TABLE test_control_enum (
+      col control_enum NOT NULL
+    );
 `);
 }

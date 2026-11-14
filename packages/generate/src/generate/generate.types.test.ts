@@ -172,3 +172,26 @@ test("select string literal with quote and backslash", async () => {
     ],
   });
 });
+
+test("select enum with control characters", async () => {
+  await testQuery({
+    schema: `
+      CREATE TYPE control_enum AS ENUM (E'line\\nbreak', E'tab\\tchar', E'carriage\\rreturn');
+      CREATE TABLE test_control_enum (col control_enum NOT NULL);
+    `,
+    query: `SELECT col FROM test_control_enum`,
+    expected: [
+      [
+        "col",
+        {
+          kind: "union",
+          value: [
+            { kind: "type", value: "'line\\nbreak'", type: "control_enum" },
+            { kind: "type", value: "'tab\\tchar'", type: "control_enum" },
+            { kind: "type", value: "'carriage\\rreturn'", type: "control_enum" },
+          ],
+        },
+      ],
+    ],
+  });
+});
